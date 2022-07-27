@@ -1,6 +1,8 @@
 package com.mongo.example.mongodemo.controller;
 
 import java.util.List;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mongo.example.mongodemo.config.MessagingConfig;
 import com.mongo.example.mongodemo.exception.BusinessException;
 import com.mongo.example.mongodemo.exception.ControllerException;
 import com.mongo.example.mongodemo.models.apimodel.User;
@@ -23,17 +27,22 @@ public class UserController {
 	@Autowired
 	private UserServiceInterface userServiceInterface;
 	
+	 @Autowired
+	    private RabbitTemplate template;
+	 
 	public UserController(UserServiceInterface userServiceInterface) {
 		this.userServiceInterface = userServiceInterface;
 	}
 
-	//fetching all user	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAllUsers()
 	{
 		List<User> user = null;
 		try {
 		 user =userServiceInterface.getAllUsers();
+	       System.out.println("try=> getall");
+		 template.convertAndSend(MessagingConfig.EXCHANGE, MessagingConfig.ROUTING_KEY, user);
+
 		return new ResponseEntity<List<User>>(user,HttpStatus.OK);
 		}
 		catch (BusinessException e) {
@@ -65,11 +74,8 @@ public class UserController {
 		{
 			return new ResponseEntity<User>(user1, HttpStatus.LENGTH_REQUIRED);
 		}
-//	String emPAss =	cred.getEmail();
 		return new ResponseEntity<String>("successfully signed in",HttpStatus.OK);
-		
-//		return Response.success(userDto);
-	}
+			}
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody User user)
@@ -158,38 +164,3 @@ public class UserController {
 		}
 	}
 }
-
-//@GetMapping("/getAll")
-//public List<User> getAllUsers()
-//{
-//	try {
-//	List<User> user =userServiceInterface.getAllUsers();
-////	return (ResponseEntity<?>) user;
-////	User v=(User) user;
-//	return user;
-//	}
-//	catch (BusinessException e) {
-//		ControllerException ce = new ControllerException(e.getErrorCode(),e.getErrorMessage());
-////		return new ResponseEntity<ControllerException>(ce, HttpStatus.BAD_REQUEST);
-//
-//	}
-//	catch (Exception e) {
-//		ControllerException ce = new ControllerException("622","something went wrong in controller");
-////		return (List<User>) new ResponseEntity<ControllerException>(ce, HttpStatus.BAD_REQUEST);
-//	}
-//	return null;
-//	
-//}
-
-
-
-//@PostMapping("/signin")
-//public ResponseEntity<?> signIn(@RequestBody User cred)
-//{
-//	User userDto =userService.validateUser(cred);
-//	if(userDto==null)
-//	{
-//		return Response.error("User Not Found");
-//	}
-//	return Response.success(userDto);
-//}

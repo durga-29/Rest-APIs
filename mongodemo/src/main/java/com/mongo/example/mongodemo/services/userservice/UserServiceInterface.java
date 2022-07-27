@@ -16,7 +16,7 @@ public interface UserServiceInterface {
 	public User addnewUser(User user);
 
 	public User getUserProfileById(int id);
-	
+
 	public User editProfile(int id, User user);
 
 }

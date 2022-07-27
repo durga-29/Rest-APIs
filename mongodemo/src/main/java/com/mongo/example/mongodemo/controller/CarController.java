@@ -1,6 +1,7 @@
 package com.mongo.example.mongodemo.controller;
 
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.mongo.example.mongodemo.exception.BusinessException;
 import com.mongo.example.mongodemo.exception.ControllerException;
 import com.mongo.example.mongodemo.exception.InvalidTemperatureException;
@@ -39,6 +39,9 @@ public class CarController {
 	private CarInterface carInterface;
 
 	MongoClient mongoClient;
+	
+//	@Autowired
+//	private ModelMapper modelMapper;
 
 	@GetMapping("/speed")
 	public ResponseEntity<?> getSpeed() {
@@ -56,10 +59,6 @@ public class CarController {
 			Car employeeSaved = carInterface.addSpeedtry(restCar);
 			return new ResponseEntity<Car>(employeeSaved, HttpStatus.CREATED);
 		}
-//		catch (InvalidTemperatureException e) {
-//			ControllerException ce = new ControllerException(e.getErrorCode(),e.getErrorMessage());
-//			return new ResponseEntity<ControllerException>(ce, HttpStatus.BAD_REQUEST);
-//		}
 		catch (BusinessException e) {
 			ControllerException ce = new ControllerException(e.getErrorCode(),e.getErrorMessage());
 			return new ResponseEntity<ControllerException>(ce, HttpStatus.BAD_REQUEST);
@@ -81,7 +80,6 @@ public class CarController {
 		try {
 	    Car saved=	carInterface.handlingDoorLock(id);
 		return new ResponseEntity<Car>(saved, HttpStatus.OK);
-
 		}
 		catch (BusinessException e) {
 			ControllerException ce = new ControllerException(e.getErrorCode(),e.getErrorMessage());
@@ -94,23 +92,23 @@ public class CarController {
 		
 	}
 
-	@RequestMapping("/trunkopen/{id}")
+	@PutMapping("/trunkopen/{id}")
 	public String handlingTrunkOpen(@PathVariable("id") int id) {
 		 return	 carInterface.handlingTrunkOpen(id);
 	}
 
-	@RequestMapping("/trunkclose/{id}")
+	@PutMapping("/trunkclose/{id}")
 	public String handlingTrunkClose(@PathVariable("id") int id) {
 		return	 carInterface.handlingTrunkClose(id);
 	}
 
 
-	@RequestMapping("/acon/{id}")
+	@PutMapping("/acon/{id}")
 	public String handlingACOn(@PathVariable("id") int id) {
 		return	 carInterface.handlingACOn(id);
 	}
 
-	@RequestMapping("/acoff/{id}")
+	@PutMapping("/acoff/{id}")
 	public String handlingACOff(@PathVariable("id") int id) {
 		return	 carInterface.handlingACOff(id);
 	}
@@ -128,7 +126,77 @@ public class CarController {
 			return new ResponseEntity<ControllerException>(ce, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@PutMapping("/airOuterOff/{id}")
+	public String handlingairOuterOff(@PathVariable("id") int id) {
+		return carInterface.handlingAirOuterOff(id);
+	}
+	
+	@PutMapping("/airOuterOn/{id}")
+	public String handlingairOuterOn(@PathVariable("id") int id) {
+		return carInterface.handlingAirOuterOn(id);
+	}
+	
+	@PutMapping("/airCirculationOff/{id}")
+	public String handlingAirCirculationOff(@PathVariable("id") int id) {
+		return carInterface.handlingAirCirculationOff(id);
+	}
+	
+	@PutMapping("/airCirculationOn/{id}")
+	public String handlingAirCirculationOn(@PathVariable("id") int id) {
+		return carInterface.handlingAirCirculationOn(id);
+	}
+	
+	@PutMapping("/defrostRearOn/{id}")
+	public String defrostRearOn(@PathVariable("id") int id) {
+		return carInterface.defrostRearOn(id);
+	}
+	
+	@PutMapping("/defrostRearOff/{id}")
+	public String defrostRearOff(@PathVariable("id") int id) {
+		return carInterface.defrostRearOff(id);
+	}
+	
+	@PutMapping("/defrostFrontOn/{id}")
+	public String defrostFrontOn(@PathVariable("id") int id) {
+		return carInterface.defrostFrontOn(id);
+	}
+	
+	@PutMapping("/defrostFrontOff/{id}")
+	public String defrostFrontOff(@PathVariable("id") int id) {
+		return carInterface.defrostFrontOff(id);
+	}
 
+	@PutMapping("/flowDownOn/{id}")
+	public String flowDownOn(@PathVariable("id") int id) {
+		return carInterface.flowDownOn(id);
+	}
+	
+	@PutMapping("/flowDownOff/{id}")
+	public String flowDownOff(@PathVariable("id") int id) {
+		return carInterface.flowDownOff(id);
+	}
+	
+	@PutMapping("/flowUpOff/{id}")
+	public String flowUpOff(@PathVariable("id") int id) {
+		return carInterface.flowUpOff(id);
+	}
+	
+	@PutMapping("/flowUpOn/{id}")
+	public String flowUpOn(@PathVariable("id") int id) {
+		return carInterface.flowUpOn(id);
+	}
+	
+	@PutMapping("/flowBothOn/{id}")
+	public String flowBothOn(@PathVariable("id") int id) {
+		return carInterface.flowBothOn(id);
+	}
+	
+	@PutMapping("/flowBothOff/{id}")
+	public String flowBothOff(@PathVariable("id") int id) {
+		return carInterface.flowBothOff(id);
+	}
+	
 	@PutMapping("/decrsunroofslider/{id}")
 	public String DecreSunroofSlider( @PathVariable("id") int id) {
 		return carInterface.DecreSunroofSlider(id);
@@ -140,36 +208,3 @@ public class CarController {
 	}
 
 }
-
-//@PutMapping("/doorlock/{id}")
-//public String handlingDoorUnlock( @PathVariable("id") int id) {
-//	Query query=new Query(Criteria.where("_id").is(id));
-//
-//	List<RestCar> restCar=mongoTemplate.find(query,RestCar.class);
-//
-//    if(restCar!=null){
-//        Update update=new Update().set("door","LOCK");
-//        UpdateResult result = mongoTemplate.updateFirst(query,update,RestCar.class);	
-//        System.out.println("count incre"+result.getModifiedCount());
-//    }else{
-//        throw new ResourceNotFoundException(" not found");		   
-//}		    
-//return  "success";
-//}
-
-//@RequestMapping("/doorunlock/{id}")
-//public String handlingDoorOff(@PathVariable("id") int id) {
-//	Query query=new Query(Criteria.where("_id").is(id));
-//    List<RestCar> restCar=mongoTemplate.find(query,RestCar.class);
-//
-//    if(restCar!=null){
-//    	System.out.println("if");
-//        Update update=new Update().set("door","UNLOCK");
-//        Update up = new Update().set("sunroofSlider", 3);
-//        UpdateResult result = mongoTemplate.updateFirst(query,update,RestCar.class);	
-//        System.out.println("count incre"+result.getModifiedCount());
-//    }else{
-//System.out.println("else");		   
-//}		    
-//return  "success";
-//}

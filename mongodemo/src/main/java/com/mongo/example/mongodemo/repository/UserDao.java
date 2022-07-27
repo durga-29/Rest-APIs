@@ -14,14 +14,5 @@ public interface UserDao extends JpaRepository<User, Integer>{
 		
 	@Query(value="SELECT u.user_id,u.address,u.email,u.first_name,u.img,u.last_name FROM user u WHERE u.user_id =:user_id",nativeQuery = true)
 	User getUserProfileById(@Param("user_id") int user_id);
-	
-//	@Query(value="SELECT * FROM user WHERE user_id =?", nativeQuery = true)
-//	User getUserProfileById(@Param("user_id") int user_id);
 
-
-	
-//	@Transactional
-//	@Modifying
-//	@Query(value="UPDATE user SET address = :address WHERE user_id = :user_id", nativeQuery = true)
-//	public User	editProfile(int id, User user);
 }

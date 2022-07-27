@@ -1,20 +1,26 @@
 package com.mongo.example.mongodemo.services.userservice;
 
 import java.util.List;
+
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.mongo.example.mongodemo.exception.BusinessException;
 import com.mongo.example.mongodemo.models.apimodel.User;
 import com.mongo.example.mongodemo.repository.UserDao;
 
-
 @Service
 public class UserServiceImpl implements UserServiceInterface {
+
+	public static final String EXCHANGE = "javatechie_exchange";
+	public static final String ROUTING_KEY = "javatechie_routingKey";
 
 	@Autowired
 	private UserDao userDao;
 
-	// Signup // add new user
+	@Autowired
+	private AmqpTemplate rabbitTemplate;
+
 	@Override
 	public User addnewUser(User user) {
 		if (user.getFirst_name().isEmpty() || user.getFirst_name().length() == 0) {
@@ -36,6 +42,7 @@ public class UserServiceImpl implements UserServiceInterface {
 		List<User> list = null;
 		try {
 			list = userDao.findAll();
+			rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, list);
 		} catch (Exception e) {
 			throw new BusinessException("604",
 					"Something went wrong in service layer while fetching all users" + e.getMessage());
@@ -74,17 +81,12 @@ public class UserServiceImpl implements UserServiceInterface {
 		return user;
 	}
 
-	// validating User for Signin Request
 	@Override
 	public User validateUser(User cred) {
 		User user;
 		try {
 			user = userDao.findUserByEmail(cred.getEmail());
-		}
-//		catch (IllegalArgumentException e) {
-//			throw new BusinessException("610", "Given user object is blank" + e.getMessage());
-//		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new BusinessException("611",
 					"Something went wrong in service layer while saving new user" + e.getMessage());
 		}
@@ -105,54 +107,19 @@ public class UserServiceImpl implements UserServiceInterface {
 			user1.setLast_name(user.getLast_name());
 			System.out.println(user.getLast_name());
 			user1.setImg(user.getImg());
-		}
-		catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			throw new BusinessException("615", "Given user id is null. " + e.getMessage());
+		} catch (Exception e1) {
+			throw new BusinessException("616", "something wrong in service layer, " + e1.getMessage());
 		}
-		 catch (Exception e1) {
-				throw new BusinessException("616", "something wrong in service layer, " + e1.getMessage());
-			}
 		return userDao.save(user1);
-		
 	}
 
-//	private JdbcTemplate jdbcTemplate;
-//	public UserServiceImpl(JdbcTemplate jdbcTemplate) {
-//		this.jdbcTemplate = jdbcTemplate;
-//	}
-//	@Override
-//	public  User getUserProfileById(int user_id) {
-//		String sql = "SELECT user_id, address, email, first_name, img, last_name FROM user where user_id=?";
-//		UserRowMapperImpl topicRowMapper = new UserRowMapperImpl();
-//		 List<User> list = jdbcTemplate.query(sql, topicRowMapper,user_id);
-//		return list.get(0);
-//	}
-	
-//	@Override
-//	public User getUserProfile(int userId) {
-//		 User user = userDao.findById(userId).get();
-//		System.out.println("user"+user);
-//		
-//		
-//		User returnUser = new 
-//		 User(user.getId(), user.getFirstName(), user.getLastName(), user.getImg(), user.getEmail(),user.getAddress());
-//		System.out.println("returnUser "+returnUser);
-//		
-//		
-//		User u1 = new User(userId, user.getFirstName(), user.getLastName(), user.getImg(), user.getEmail(),user.getAddress());
-//		System.out.println(u1);
-//		return u1;
-//		
-////		User user = userDao.getUserProfileById(userId);
-////		return user;
-//	}
-	
 	@Override
 	public User getUserProfileById(int user_id) {
 		try {
-		return userDao.getUserProfileById(user_id);
-		}
-		catch (IllegalArgumentException e) {
+			return userDao.getUserProfileById(user_id);
+		} catch (IllegalArgumentException e) {
 			throw new BusinessException("613", "Given user id is null. " + e.getMessage());
 		} catch (Exception e1) {
 			throw new BusinessException("614", "Given empolyee id does not exist in database, " + e1.getMessage());

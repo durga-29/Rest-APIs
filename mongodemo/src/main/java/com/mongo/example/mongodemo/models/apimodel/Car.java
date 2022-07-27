@@ -14,25 +14,37 @@ public class Car {
 	private String ac;
 	private int minTemp = 16;
 	private int maxTemp = 30;
-	
 //	@Size(min = 0, max = 5)
 	private int sunroofSlider;
-	
-	
+	private String flowUp;
+	private String flowBoth;
+	private String flowDown;
+	private String defrostFront;
+	private String defrostRear;
+	private String airOuter;
+	private String airCirculation;
 
 	public Car(int id, int level, int speed, String door, String trunk, String ac, int minTemp, int maxTemp,
-		int sunroofSlider) {
-	super();
-	this.id = id;
-	this.level = level;
-	this.speed = speed;
-	this.door = door;
-	this.trunk = trunk;
-	this.ac = ac;
-	this.minTemp = minTemp;
-	this.maxTemp = maxTemp;
-	this.sunroofSlider = sunroofSlider;
-}
+			int sunroofSlider, String flowUp, String flowBoth, String flowDown, String defrostFront, String defrostRear,
+			String airOuter, String airCirculation) {
+		super();
+		this.id = id;
+		this.level = level;
+		this.speed = speed;
+		this.door = door;
+		this.trunk = trunk;
+		this.ac = ac;
+		this.minTemp = minTemp;
+		this.maxTemp = maxTemp;
+		this.sunroofSlider = sunroofSlider;
+		this.flowUp = flowUp;
+		this.flowBoth = flowBoth;
+		this.flowDown = flowDown;
+		this.defrostFront = defrostFront;
+		this.defrostRear = defrostRear;
+		this.airOuter = airOuter;
+		this.airCirculation = airCirculation;
+	}
 
 	public Car() {
 		super();
@@ -109,10 +121,69 @@ public class Car {
 	public void setAc(String ac) {
 		this.ac = ac;
 	}
+	
+	public String getFlowUp() {
+		return flowUp;
+	}
+
+	public void setFlowUp(String flowUp) {
+		this.flowUp = flowUp;
+	}
+
+	public String getFlowBoth() {
+		return flowBoth;
+	}
+
+	public void setFlowBoth(String flowBoth) {
+		this.flowBoth = flowBoth;
+	}
+
+	public String getFlowDown() {
+		return flowDown;
+	}
+
+	public void setFlowDown(String flowDown) {
+		this.flowDown = flowDown;
+	}
+
+	public String getDefrostFront() {
+		return defrostFront;
+	}
+
+	public void setDefrostFront(String defrostFront) {
+		this.defrostFront = defrostFront;
+	}
+
+	public String getDefrostRear() {
+		return defrostRear;
+	}
+
+	public void setDefrostRear(String defrostRear) {
+		this.defrostRear = defrostRear;
+	}
+
+	public String getAirOuter() {
+		return airOuter;
+	}
+
+	public void setAirOuter(String airOuter) {
+		this.airOuter = airOuter;
+	}
+
+	public String getAirCirculation() {
+		return airCirculation;
+	}
+
+	public void setAirCirculation(String airCirculation) {
+		this.airCirculation = airCirculation;
+	}
 
 	@Override
 	public String toString() {
-		return "RestCar [id=" + id + ", level=" + level + ", speed=" + speed + ", door=" + door + ", minTemp=" + minTemp
-				+ ", maxTemp=" + maxTemp + ", sunroofSlider=" + sunroofSlider + "]";
+		return "Car [id=" + id + ", level=" + level + ", speed=" + speed + ", door=" + door + ", trunk=" + trunk
+				+ ", ac=" + ac + ", minTemp=" + minTemp + ", maxTemp=" + maxTemp + ", sunroofSlider=" + sunroofSlider
+				+ ", flowUp=" + flowUp + ", flowBoth=" + flowBoth + ", flowDown=" + flowDown + ", defrostFront="
+				+ defrostFront + ", defrostRear=" + defrostRear + ", airOuter=" + airOuter + ", airCirculation="
+				+ airCirculation + "]";
 	}
 }
